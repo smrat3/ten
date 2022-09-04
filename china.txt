@@ -1,0 +1,67 @@
+GNU nano 6.3               china.txt#68CF00
+#!/bin/bash
+# valid-date--Validates a date, taking into account leap year r>
+
+normdate="whatever you called the normdate.sh script"
+
+exceedsDaysInMonth()
+{
+# Given a month name and day number in that month, this functio>
+# return 0 if the specified day value is less than or equal to >
+# max days in the month; 1 otherwise.
+
+
+case $(echo $1|tr '[:upper:]' '[:lower:]') in
+ jan* ) days=31 ;; feb* ) days=28 ;;
+ mar* ) days=31 ;; apr* ) days=30 ;;
+ may* ) days=31 ;; jun* ) days=30 ;;
+ jul* ) days=31 ;; aug* ) days=31 ;;
+ sep* ) days=30 ;; oct* ) days=31 ;;
+ nov* ) days=30 ;; dec* ) days=31 ;;
+ * )
+echo "$0: Unknown month name $1" >&2  exit 1  esac  if [ $2 -lt>
+ return 1
+ else
+return 0 # The day number is valid.
+ fi
+}
+isLeapYear()
+{
+
+# This function returns 0 if the specified year is a leap year;
+# 1 otherwise.
+# The formula for checking whether a year is a leap year is:
+# 1. Years not divisible by 4 are not leap years.
+# 2. Years divisible by 4 and by 400 are leap years.
+# 3. Years divisible by 4, not divisible by 400, but divisible >
+# 4. All other years divisible by 4 are leap years.
+
+ year=$1 
+if [ "$((year % 4))" -ne 0 ] ; then
+return 1 # Nope, not a leap year.
+ elif [ "$((year % 400))" -eq 0 ] ; then
+return 0 # Yes, it's a leap year.
+ elif [ "$((year % 100))" -eq 0 ] ; then
+return 1
+else
+return 0
+fi
+}
+
+# BEGIN MAIN SCRIPT
+# =================
+
+if [ $# -ne 3 ] ; then
+echo "Usage: $0 month day year" >&2
+echo "Typical input formats are August 3 1962 and 8 3 1962" >&2>
+exit 1
+fi
+
+# Normalize date and store the return value to check for errors.
+ newdate="$($normdate "$@")"
+
+if [ $? -eq 1 ] ; then  exit 1   # Error condition already repo>
+fi
+
+# Split the normalized date format, where
+# first word = month, second word = day, third word = year.
